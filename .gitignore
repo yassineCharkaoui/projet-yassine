@@ -1,0 +1,35 @@
+# Fichiers de configuration sensibles
+controller/config.php
+
+# Uploads (ordonnances des clients) - NOUVELLE STRUCTURE
+view/uploads/ordonnances/*
+!view/uploads/ordonnances/.htaccess
+view/uploads/pdf/*
+!view/uploads/pdf/.htaccess
+view/uploads/medicaments/*
+!view/uploads/medicaments/.htaccess
+
+# Logs
+*.log
+
+# Fichiers temporaires
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# PHP
+view/vendor/
+composer.lock

@@ -1,0 +1,16 @@
+# Protection du dossier images médicaments
+# Autoriser uniquement les images
+
+<FilesMatch "\.(jpg|jpeg|png|gif|webp)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+# Bloquer l'exécution de scripts PHP
+<FilesMatch "\.php$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Désactiver l'affichage des dossiers
+Options -Indexes
