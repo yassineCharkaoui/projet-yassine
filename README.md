@@ -24,7 +24,7 @@ Ce système permet la gestion complète d'une pharmacie avec 3 types d'utilisate
 
 3. **Configurer la connexion** dans `controller/config.php`. Conserver la base existante. Pour une installation neuve uniquement, préparer une base séparée à partir de `schema.sql`.
 
-4. **Ouvrir le point d'entrée racine** : `<URL-du-projet>/index.php`. La connexion utilise `index.php?controller=auth&action=login`. Ne pas utiliser les fichiers de templates comme points d'entrée.
+4. **Ouvrir le point d'entrée** : `<URL-du-projet>/view/index.php`. La connexion utilise `view/index.php?controller=auth&action=login`. Le fichier `index.php` à la racine a été supprimé. Ne pas utiliser les fichiers de templates comme points d'entrée.
 
 5. **Vérifier les chemins** avec `python tests/check_paths.py` (PHP et Python doivent être disponibles). Ces tests utilisent des données simulées et ne modifient pas la base.
 
@@ -32,16 +32,24 @@ Ce système permet la gestion complète d'une pharmacie avec 3 types d'utilisate
 
 Le préfixe public est déduit de l'URL du script exécuté. Les dossiers renommés, les espaces et une installation à la racine du site sont pris en charge. Pour un alias Apache particulier, définir la variable d'environnement `APP_BASE_PATH` avec un chemin URL, par exemple `/pharmacie/`. Ne jamais y mettre un chemin disque ou un nom d'hôte.
 
-`appUrl()` construit les destinations locales et `buildUrl()` ajoute les paramètres de contrôleur et d'action. `redirect()` utilise le même préfixe. Le routeur historique sous `view/` renvoie vers la racine avec un statut 307 pour conserver les données POST. Les accès GET directs aux templates de connexion/inscription sont redirigés ; leurs POST directs sont refusés avec un statut 405.
+`appUrl()` construit les destinations locales et `buildUrl()` ajoute les paramètres de contrôleur et d'action. `redirect()` utilise le même préfixe. Toute destination `index.php` est résolue vers `view/index.php`, qui traite directement les GET et les POST. Les ressources restent sous `view/assets/` et `view/uploads/`. Les accès GET directs aux templates de connexion/inscription sont redirigés ; leurs POST directs sont refusés avec un statut 405.
 
 Le routeur, FPDF (avec ses polices et sa licence) et les ressources de validation ont été récupérés de l'ancien projet. Les cinq vues absentes des deux copies ont été ajoutées. Les anciens scripts d'installation, de diagnostic, de modification des mots de passe et de migration restent uniquement dans la copie de référence ; ils ne sont pas nécessaires à l'exécution et n'ont pas été lancés.
 
 ### Vérification sur le PC qui héberge la base
 
-- Ouvrir le point d'entrée racine et vérifier connexion réussie/échouée, inscription et déconnexion avec des comptes de test pour chaque rôle.
+- Ouvrir `view/index.php` et vérifier connexion réussie/échouée, inscription et déconnexion avec des comptes de test pour chaque rôle.
 - Vérifier les tableaux de bord, recherches et filtres, panier, soumission d'ordonnance, demandes de renouvellement et téléchargements PDF avec les données de test de cette installation.
-- Dans l'onglet Réseau du navigateur, contrôler l'URL, la méthode POST/GET et les redirections. Toutes les actions doivent viser le `index.php` racine du projet, sans chemin disque ni `/view/auth/index.php`.
+- Dans l'onglet Réseau du navigateur, contrôler l'URL, la méthode POST/GET et les redirections. Toutes les actions doivent viser `view/index.php`, sans chemin disque ni `/view/auth/index.php`.
 - En cas de réponse 500, consulter les journaux PHP. Les tests automatisés simulent PDO : ils vérifient les chemins et le comportement HTTP, pas la connexion ni le schéma de la base réelle.
+
+### Interactions, paiements et diagramme
+
+- Le pharmacien peut ajouter, consulter, modifier et supprimer les interactions depuis le menu **Interactions**. La liste dispose d'une recherche, d'un filtre de gravité et d'un style responsive. Les écritures utilisent POST et un jeton CSRF. Les paires identiques ou déjà présentes sont refusées, quel que soit leur ordre.
+- Une interaction liée à des alertes ne peut pas être supprimée ni changer de paire de médicaments ; sa description, sa gravité et sa recommandation restent modifiables. Les alertes existantes sont conservées.
+- Les rapports affichent **Carte bancaire** pour `carte` et l'ancien libellé `carte_bancaire`. Une valeur vide affiche **Non renseigné** : son ancien mode de paiement doit être confirmé avant toute correction en base. La donnée d'exemple incompatible avec l'ENUM a été corrigée dans `schema.sql`, sans exécuter ce fichier ni modifier la base existante.
+- Ouvrir [le diagramme draw.io](docs/schema-pharmacie.drawio) dans diagrams.net. La deuxième page présente simplement chaque relation avec son verbe et ses cardinalités. Le [code Mermaid](docs/schema-pharmacie.mmd) et les [notes de lecture](docs/schema-pharmacie.md) sont également fournis.
+- `python tests/check_paths.py` teste également le CRUD avec une base SQLite temporaire, supprimée après les tests. Aucune connexion à la base MySQL de l'application n'est effectuée.
 
 ## 👥 Comptes de Test
 
@@ -125,13 +133,13 @@ projet yassine/
 │       │   ├── cart.php              # Gestion panier
 │       │   └── checkout.php          # Processus paiement
 │       └── historique.php            # Historique achats détaillé
-├── index.php                         # Point d'entrée (routeur MVC)
+├── view/index.php                    # Point d'entrée unique (routeur MVC)
 └── schema.sql                        # Schéma de la base de données
 ```
 
 ### ✨ Nouveautés v2.0
 - **Structure MVC stricte** : Assets, uploads et vendor déplacés sous `view/`
-- **Routage portable** : Point d'entrée racine et préfixe URL indépendant du nom du dossier
+- **Routage portable** : Point d'entrée `view/index.php` et préfixe URL indépendant du nom du dossier
 - **Sécurité renforcée** : Fichiers `.htaccess` automatiques pour tous les uploads
 - **Panier d'achat** : Système complet pour médicaments sans ordonnance
 

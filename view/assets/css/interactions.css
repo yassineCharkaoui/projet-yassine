@@ -1,0 +1,15 @@
+.interactions-page .interaction-heading{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.interactions-page .interaction-heading h2{margin:8px 0 10px;font-size:28px;line-height:1.3}
+.interactions-page .interaction-heading p,.interaction-muted{color:#64748b;font-size:14px}
+.interaction-eyebrow{font-size:11px;letter-spacing:1.5px;font-weight:800;color:#4f46e5}
+.interaction-filters,.interaction-form-grid{display:grid;grid-template-columns:2fr 1fr;gap:20px}.interaction-form-grid{grid-template-columns:1fr 1fr}
+.interaction-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.interaction-actions form{margin:0}
+.interactions-page .interaction-table td{padding:20px 18px;white-space:normal;vertical-align:middle}.interaction-table td:first-child{min-width:240px;line-height:1.8}.interaction-table td:last-child{min-width:285px}
+.interaction-plus{color:#94a3b8;padding:0 10px;font-weight:400}
+.severity{display:inline-flex;align-items:center;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;white-space:nowrap}
+.severity-mineur{background:#e0f2fe;color:#075985}.severity-modere{background:#fef3c7;color:#92400e}.severity-majeur{background:#fee2e2;color:#991b1b}.severity-contre_indique{background:#ede9fe;color:#5b21b6}
+.interaction-empty{text-align:center;padding:44px 20px;color:#64748b}.interaction-empty h3{margin-bottom:12px;color:#0f172a}.interaction-note{font-size:12px;color:#64748b;line-height:1.6;margin-top:20px}
+.interaction-footer{margin-top:28px;padding-top:24px;border-top:1px solid #e2e8f0}.interaction-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}.interaction-detail-grid h4{margin:0 0 14px;color:#334155}
+.interaction-prose{font-size:15px;line-height:1.8;color:#475569;overflow-wrap:anywhere}.interaction-recommendation{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:22px}
+.interaction-form-card{max-width:960px}.interaction-errors{display:block!important}.interaction-errors ul{padding-left:20px;margin-top:10px}.interactions-page textarea{resize:vertical;line-height:1.6}.interactions-page [hidden]{display:none!important}
+@media(max-width:760px){.interaction-filters,.interaction-form-grid,.interaction-detail-grid{grid-template-columns:1fr}.interactions-page .interaction-heading h2{font-size:23px}.interaction-heading>.btn{width:100%}.interaction-detail-grid{gap:20px}}

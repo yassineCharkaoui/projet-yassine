@@ -280,6 +280,111 @@ class PharmacienController
         $interactions = $this->interactionModel->getAll();
         require_once __DIR__ . '/../view/pharmacien/interactions/list.php';
     }
+
+    public function addInteraction(): void
+    {
+        $interaction = [];
+        $errors = [];
+        $medicaments = $this->medicamentModel->getAll(false);
+        require __DIR__ . '/../view/pharmacien/interactions/form.php';
+    }
+
+    public function editInteraction(): void
+    {
+        $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT) ?: 0;
+        $interaction = $this->interactionModel->getById($id);
+        if (!$interaction) {
+            setFlashMessage('error', 'Interaction introuvable.');
+            redirect(buildUrl('pharmacien', 'interactions'));
+        }
+        $errors = [];
+        $medicaments = $this->medicamentModel->getAll(false);
+        require __DIR__ . '/../view/pharmacien/interactions/form.php';
+    }
+
+    private function verifyInteractionPost(): void
+    {
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+            http_response_code(405);
+            header('Allow: POST');
+            echo 'Cette action nécessite un formulaire POST.';
+            exit;
+        }
+        if (!is_string($_POST['csrf_token'] ?? null) || !verifyCSRFToken($_POST['csrf_token'])) {
+            http_response_code(403);
+            echo 'Formulaire expiré. Rechargez la page des interactions.';
+            exit;
+        }
+    }
+
+    public function saveInteraction(): void
+    {
+        $this->verifyInteractionPost();
+        $id = filter_var($_POST['id'] ?? 0, FILTER_VALIDATE_INT);
+        if ($id === false || $id < 0) {
+            http_response_code(400);
+            echo 'Identifiant invalide.';
+            return;
+        }
+        $existing = $id ? $this->interactionModel->getById($id) : null;
+        if ($id && !$existing) {
+            setFlashMessage('error', 'Interaction introuvable.');
+            redirect(buildUrl('pharmacien', 'interactions'));
+        }
+        $interaction = ['id_interaction' => $id];
+        foreach (['id_medicament_1', 'id_medicament_2'] as $field) {
+            $interaction[$field] = filter_var($_POST[$field] ?? null, FILTER_VALIDATE_INT) ?: 0;
+        }
+        foreach (['niveau_gravite', 'description', 'recommandation'] as $field) {
+            $interaction[$field] = is_string($_POST[$field] ?? null) ? trim($_POST[$field]) : '';
+        }
+        $errors = [];
+        $med1 = $interaction['id_medicament_1'];
+        $med2 = $interaction['id_medicament_2'];
+        if ($med1 <= 0 || $med2 <= 0 || !$this->medicamentModel->getById($med1) || !$this->medicamentModel->getById($med2)) {
+            $errors[] = 'Sélectionnez deux médicaments existants.';
+        } elseif ($med1 === $med2) {
+            $errors[] = 'Les deux médicaments doivent être différents.';
+        } elseif ($this->interactionModel->pairExists($med1, $med2, $id)) {
+            $errors[] = 'Une interaction existe déjà pour cette paire de médicaments.';
+        }
+        if (!in_array($interaction['niveau_gravite'], ['mineur', 'modere', 'majeur', 'contre_indique'], true)) $errors[] = 'Sélectionnez un niveau de gravité valide.';
+        if ($interaction['description'] === '') $errors[] = 'La description est obligatoire.';
+        if (strlen($interaction['description']) > 60000 || strlen($interaction['recommandation']) > 60000) $errors[] = 'Les textes sont trop longs (60 000 octets maximum par champ).';
+        if ($existing && $this->interactionModel->hasAlerts($id) &&
+            [min($med1, $med2), max($med1, $med2)] !== [min((int)$existing['id_medicament_1'], (int)$existing['id_medicament_2']), max((int)$existing['id_medicament_1'], (int)$existing['id_medicament_2'])]) {
+            $errors[] = 'Cette interaction possède des alertes : conservez la paire de médicaments pour préserver leur historique.';
+        }
+        if (!$errors) {
+            $savedId = $id ? ($this->interactionModel->update($id, $interaction) ? $id : null) : $this->interactionModel->create($interaction);
+            if ($savedId) {
+                logAction($_SESSION['user_id'], $id ? 'UPDATE_INTERACTION' : 'CREATE_INTERACTION', 'interaction_medicamenteuse', $savedId);
+                setFlashMessage('success', $id ? 'Interaction mise à jour.' : 'Interaction ajoutée.');
+                redirect(buildUrl('pharmacien', 'viewInteraction', ['id' => $savedId]));
+            }
+            $errors[] = 'Enregistrement impossible. Vérifiez que la paire ne vient pas d’être ajoutée, puis réessayez.';
+        }
+        http_response_code(422);
+        $medicaments = $this->medicamentModel->getAll(false);
+        require __DIR__ . '/../view/pharmacien/interactions/form.php';
+    }
+
+    public function deleteInteraction(): void
+    {
+        $this->verifyInteractionPost();
+        $id = filter_var($_POST['id'] ?? null, FILTER_VALIDATE_INT) ?: 0;
+        if ($id <= 0 || !$this->interactionModel->getById($id)) {
+            setFlashMessage('error', 'Interaction introuvable.');
+        } elseif ($this->interactionModel->hasAlerts($id)) {
+            setFlashMessage('error', 'Suppression impossible : cette interaction est liée à des alertes d’ordonnances. Leur historique doit être conservé.');
+        } elseif ($this->interactionModel->delete($id)) {
+            logAction($_SESSION['user_id'], 'DELETE_INTERACTION', 'interaction_medicamenteuse', $id);
+            setFlashMessage('success', 'Interaction supprimée.');
+        } else {
+            setFlashMessage('error', 'Suppression impossible. Rechargez la liste et réessayez.');
+        }
+        redirect(buildUrl('pharmacien', 'interactions'));
+    }
     
     /**
      * Voir les détails d'une interaction

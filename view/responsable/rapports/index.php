@@ -148,16 +148,10 @@ require_once __DIR__ . '/../../layout/header.php';
                 <?php 
                 $totalTransactions = array_sum(array_column($data['transactions_par_mode'], 'nombre'));
                 $totalMontant = array_sum(array_column($data['transactions_par_mode'], 'total'));
-                $modes_icons = [
-                    'especes' => '💵 Espèces',
-                    'carte' => '💳 Carte bancaire',
-                    'cheque' => '📝 Chèque',
-                    'mutuelle' => '🏥 Mutuelle / Tiers Payant'
-                ];
                 foreach ($data['transactions_par_mode'] as $mode): 
                 ?>
                 <tr>
-                    <td><strong><?= $modes_icons[$mode['mode_paiement']] ?? $mode['mode_paiement'] ?></strong></td>
+                    <td><strong><?= escape(paymentLabel($mode['mode_paiement'] ?? null)) ?></strong></td>
                     <td><strong><?= $mode['nombre'] ?></strong></td>
                     <td><strong style="color: var(--primary);"><?= number_format($mode['total'], 2) ?> €</strong></td>
                     <td>

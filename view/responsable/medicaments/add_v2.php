@@ -99,7 +99,7 @@ $isEdit = isset($medicament);
             <?php if ($isEdit && !empty($medicament['image'])): ?>
             <div class="image-preview-container">
                 <p style="color: #666; margin-bottom: 10px;">Image actuelle :</p>
-                <img src="<?= escape(appUrl('view/uploads/')) ?>medicaments/<?= escape($medicament['image']) ?>" alt="Image actuelle" style="max-width: 200px;">
+                <img src="<?= escape(appUrl('view/uploads/')) ?>medicaments/<?= escape($medicament['image'] ?? '') ?>" alt="Image actuelle" style="max-width: 200px;">
             </div>
             <?php endif; ?>
         </div>
@@ -118,7 +118,7 @@ $isEdit = isset($medicament);
                        data-required="true"
                        data-minlength="2"
                        data-maxlength="200"
-                       value="<?= $isEdit ? escape($medicament['nom_commercial']) : '' ?>">
+                       value="<?= $isEdit ? escape($medicament['nom_commercial'] ?? '') : '' ?>">
             </div>
             
             <div class="form-group">
@@ -128,7 +128,7 @@ $isEdit = isset($medicament);
                        name="nom_generique" 
                        class="form-control"
                        data-maxlength="200"
-                       value="<?= $isEdit ? escape($medicament['nom_generique']) : '' ?>">
+                       value="<?= $isEdit ? escape($medicament['nom_generique'] ?? '') : '' ?>">
             </div>
         </div>
         
@@ -139,7 +139,7 @@ $isEdit = isset($medicament);
                        id="dci" 
                        name="dci" 
                        class="form-control"
-                       value="<?= $isEdit ? escape($medicament['dci']) : '' ?>">
+                       value="<?= $isEdit ? escape($medicament['dci'] ?? '') : '' ?>">
             </div>
             
             <div class="form-group">
@@ -148,7 +148,7 @@ $isEdit = isset($medicament);
                        id="laboratoire" 
                        name="laboratoire" 
                        class="form-control"
-                       value="<?= $isEdit ? escape($medicament['laboratoire']) : '' ?>">
+                       value="<?= $isEdit ? escape($medicament['laboratoire'] ?? '') : '' ?>">
             </div>
         </div>
         
@@ -157,15 +157,15 @@ $isEdit = isset($medicament);
                 <label for="forme" class="required-label">Forme</label>
                 <select id="forme" name="forme" class="form-control" data-required="true">
                     <option value="">-- Sélectionner --</option>
-                    <option value="Comprimé" <?= $isEdit && $medicament['forme'] == 'Comprimé' ? 'selected' : '' ?>>Comprimé</option>
-                    <option value="Gélule" <?= $isEdit && $medicament['forme'] == 'Gélule' ? 'selected' : '' ?>>Gélule</option>
-                    <option value="Sirop" <?= $isEdit && $medicament['forme'] == 'Sirop' ? 'selected' : '' ?>>Sirop</option>
-                    <option value="Injectable" <?= $isEdit && $medicament['forme'] == 'Injectable' ? 'selected' : '' ?>>Injectable</option>
-                    <option value="Crème" <?= $isEdit && $medicament['forme'] == 'Crème' ? 'selected' : '' ?>>Crème</option>
-                    <option value="Pommade" <?= $isEdit && $medicament['forme'] == 'Pommade' ? 'selected' : '' ?>>Pommade</option>
-                    <option value="Inhalateur" <?= $isEdit && $medicament['forme'] == 'Inhalateur' ? 'selected' : '' ?>>Inhalateur</option>
-                    <option value="Suppositoire" <?= $isEdit && $medicament['forme'] == 'Suppositoire' ? 'selected' : '' ?>>Suppositoire</option>
-                    <option value="Gouttes" <?= $isEdit && $medicament['forme'] == 'Gouttes' ? 'selected' : '' ?>>Gouttes</option>
+                    <option value="Comprimé" <?= $isEdit && ($medicament['forme'] ?? '') == 'Comprimé' ? 'selected' : '' ?>>Comprimé</option>
+                    <option value="Gélule" <?= $isEdit && ($medicament['forme'] ?? '') == 'Gélule' ? 'selected' : '' ?>>Gélule</option>
+                    <option value="Sirop" <?= $isEdit && ($medicament['forme'] ?? '') == 'Sirop' ? 'selected' : '' ?>>Sirop</option>
+                    <option value="Injectable" <?= $isEdit && ($medicament['forme'] ?? '') == 'Injectable' ? 'selected' : '' ?>>Injectable</option>
+                    <option value="Crème" <?= $isEdit && ($medicament['forme'] ?? '') == 'Crème' ? 'selected' : '' ?>>Crème</option>
+                    <option value="Pommade" <?= $isEdit && ($medicament['forme'] ?? '') == 'Pommade' ? 'selected' : '' ?>>Pommade</option>
+                    <option value="Inhalateur" <?= $isEdit && ($medicament['forme'] ?? '') == 'Inhalateur' ? 'selected' : '' ?>>Inhalateur</option>
+                    <option value="Suppositoire" <?= $isEdit && ($medicament['forme'] ?? '') == 'Suppositoire' ? 'selected' : '' ?>>Suppositoire</option>
+                    <option value="Gouttes" <?= $isEdit && ($medicament['forme'] ?? '') == 'Gouttes' ? 'selected' : '' ?>>Gouttes</option>
                 </select>
             </div>
             
@@ -177,7 +177,7 @@ $isEdit = isset($medicament);
                        class="form-control" 
                        placeholder="Ex: 500mg, 10ml"
                        data-required="true"
-                       value="<?= $isEdit ? escape($medicament['dosage']) : '' ?>">
+                       value="<?= $isEdit ? escape($medicament['dosage'] ?? '') : '' ?>">
             </div>
         </div>
         
@@ -186,16 +186,16 @@ $isEdit = isset($medicament);
                 <label for="categorie" class="required-label">Catégorie</label>
                 <select id="categorie" name="categorie" class="form-control" data-required="true">
                     <option value="">-- Sélectionner --</option>
-                    <option value="Antalgique" <?= $isEdit && $medicament['categorie'] == 'Antalgique' ? 'selected' : '' ?>>Antalgique</option>
-                    <option value="Anti-inflammatoire" <?= $isEdit && $medicament['categorie'] == 'Anti-inflammatoire' ? 'selected' : '' ?>>Anti-inflammatoire</option>
-                    <option value="Antibiotique" <?= $isEdit && $medicament['categorie'] == 'Antibiotique' ? 'selected' : '' ?>>Antibiotique</option>
-                    <option value="Antispasmodique" <?= $isEdit && $medicament['categorie'] == 'Antispasmodique' ? 'selected' : '' ?>>Antispasmodique</option>
-                    <option value="Anxiolytique" <?= $isEdit && $medicament['categorie'] == 'Anxiolytique' ? 'selected' : '' ?>>Anxiolytique</option>
-                    <option value="Bronchodilatateur" <?= $isEdit && $medicament['categorie'] == 'Bronchodilatateur' ? 'selected' : '' ?>>Bronchodilatateur</option>
-                    <option value="Corticoïde" <?= $isEdit && $medicament['categorie'] == 'Corticoïde' ? 'selected' : '' ?>>Corticoïde</option>
-                    <option value="Hormone" <?= $isEdit && $medicament['categorie'] == 'Hormone' ? 'selected' : '' ?>>Hormone</option>
-                    <option value="Anti-acide" <?= $isEdit && $medicament['categorie'] == 'Anti-acide' ? 'selected' : '' ?>>Anti-acide</option>
-                    <option value="Autre" <?= $isEdit && $medicament['categorie'] == 'Autre' ? 'selected' : '' ?>>Autre</option>
+                    <option value="Antalgique" <?= $isEdit && ($medicament['categorie'] ?? '') == 'Antalgique' ? 'selected' : '' ?>>Antalgique</option>
+                    <option value="Anti-inflammatoire" <?= $isEdit && ($medicament['categorie'] ?? '') == 'Anti-inflammatoire' ? 'selected' : '' ?>>Anti-inflammatoire</option>
+                    <option value="Antibiotique" <?= $isEdit && ($medicament['categorie'] ?? '') == 'Antibiotique' ? 'selected' : '' ?>>Antibiotique</option>
+                    <option value="Antispasmodique" <?= $isEdit && ($medicament['categorie'] ?? '') == 'Antispasmodique' ? 'selected' : '' ?>>Antispasmodique</option>
+                    <option value="Anxiolytique" <?= $isEdit && ($medicament['categorie'] ?? '') == 'Anxiolytique' ? 'selected' : '' ?>>Anxiolytique</option>
+                    <option value="Bronchodilatateur" <?= $isEdit && ($medicament['categorie'] ?? '') == 'Bronchodilatateur' ? 'selected' : '' ?>>Bronchodilatateur</option>
+                    <option value="Corticoïde" <?= $isEdit && ($medicament['categorie'] ?? '') == 'Corticoïde' ? 'selected' : '' ?>>Corticoïde</option>
+                    <option value="Hormone" <?= $isEdit && ($medicament['categorie'] ?? '') == 'Hormone' ? 'selected' : '' ?>>Hormone</option>
+                    <option value="Anti-acide" <?= $isEdit && ($medicament['categorie'] ?? '') == 'Anti-acide' ? 'selected' : '' ?>>Anti-acide</option>
+                    <option value="Autre" <?= $isEdit && ($medicament['categorie'] ?? '') == 'Autre' ? 'selected' : '' ?>>Autre</option>
                 </select>
             </div>
             
@@ -257,7 +257,7 @@ $isEdit = isset($medicament);
                        name="date_peremption" 
                        class="form-control"
                        data-min="<?= date('Y-m-d') ?>"
-                       value="<?= $isEdit ? $medicament['date_peremption'] : '' ?>">
+                       value="<?= $isEdit ? escape($medicament['date_peremption'] ?? '') : '' ?>">
             </div>
         </div>
         
@@ -271,7 +271,7 @@ $isEdit = isset($medicament);
                       name="description" 
                       class="form-control" 
                       rows="3"
-                      data-maxlength="500"><?= $isEdit ? escape($medicament['description']) : '' ?></textarea>
+                      data-maxlength="500"><?= $isEdit ? escape($medicament['description'] ?? '') : '' ?></textarea>
             <div class="char-counter" id="descriptionCounter">0 / 500</div>
         </div>
         
@@ -280,7 +280,7 @@ $isEdit = isset($medicament);
             <textarea id="posologie" 
                       name="posologie" 
                       class="form-control" 
-                      rows="2"><?= $isEdit ? escape($medicament['posologie']) : '' ?></textarea>
+                      rows="2"><?= $isEdit ? escape($medicament['posologie'] ?? '') : '' ?></textarea>
         </div>
         
         <div class="form-group">
@@ -288,7 +288,7 @@ $isEdit = isset($medicament);
             <textarea id="contre_indications" 
                       name="contre_indications" 
                       class="form-control" 
-                      rows="3"><?= $isEdit ? escape($medicament['contre_indications']) : '' ?></textarea>
+                      rows="3"><?= $isEdit ? escape($medicament['contre_indications'] ?? '') : '' ?></textarea>
         </div>
         
         <div class="form-group">
@@ -296,7 +296,7 @@ $isEdit = isset($medicament);
             <textarea id="effets_secondaires" 
                       name="effets_secondaires" 
                       class="form-control" 
-                      rows="3"><?= $isEdit ? escape($medicament['effets_secondaires']) : '' ?></textarea>
+                      rows="3"><?= $isEdit ? escape($medicament['effets_secondaires'] ?? '') : '' ?></textarea>
         </div>
         
         <div style="display: flex; gap: 10px; margin-top: 30px;">

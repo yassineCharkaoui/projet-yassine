@@ -12,6 +12,9 @@ if (!defined('DB_NAME')) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php foreach ($pageStyles ?? [] as $stylesheet): ?>
+    <link rel="stylesheet" href="<?= escape(appUrl($stylesheet)) ?>">
+    <?php endforeach; ?>
     <title><?= isset($pageTitle) ? escape($pageTitle) . ' - ' : '' ?><?= APP_NAME ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

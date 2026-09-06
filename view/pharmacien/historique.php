@@ -125,7 +125,7 @@ $currentCurrency = $_GET['currency'] ?? 'EUR';
                         'cheque' => '📝 Chèque',
                         'mutuelle' => '🏥 Mutuelle'
                     ];
-                    $modeLabel = $modes[$trans['mode_paiement'] ?? ''] ?? ($trans['mode_paiement'] ?? 'N/A');
+                    $modeLabel = paymentLabel($trans['mode_paiement'] ?? null);
                 ?>
                 <tr>
                     <td><strong style="color: var(--primary);">#<?= $trans['id_transaction'] ?></strong></td>
@@ -154,7 +154,7 @@ $currentCurrency = $_GET['currency'] ?? 'EUR';
                     </td>
                     <td>
                         <span style="font-size: 12px; font-weight: 700; color: var(--text-dark);">
-                            <?= $modeLabel ?>
+                            <?= escape($modeLabel) ?>
                         </span>
                     </td>
                     <td>

@@ -17,7 +17,7 @@ header("Referrer-Policy: strict-origin-when-cross-origin");
 $routes = [
     'auth' => ['login', 'processLogin', 'register', 'processRegister', 'logout'],
     'client' => ['dashboard', 'catalogue', 'viewMedicament', 'searchMedicaments', 'soumettre', 'processSoumission', 'mesOrdonnances', 'viewOrdonnance', 'historique', 'demanderRenouvellement', 'mesDemandes', 'alertes', 'addToCart', 'viewCart', 'updateCart', 'removeFromCart', 'clearCart', 'checkout', 'processCheckout', 'generatePDF'],
-    'pharmacien' => ['dashboard', 'listOrdonnances', 'viewOrdonnance', 'validerOrdonnance', 'rejeterOrdonnance', 'traiterOrdonnance', 'historique', 'consultMedicaments', 'searchMedicaments', 'interactions', 'viewInteraction', 'generatePDF'],
+    'pharmacien' => ['dashboard', 'listOrdonnances', 'viewOrdonnance', 'validerOrdonnance', 'rejeterOrdonnance', 'traiterOrdonnance', 'historique', 'consultMedicaments', 'searchMedicaments', 'interactions', 'viewInteraction', 'addInteraction', 'editInteraction', 'saveInteraction', 'deleteInteraction', 'generatePDF'],
     'responsable' => ['dashboard', 'listMedicaments', 'addMedicament', 'processAddMedicament', 'editMedicament', 'processEditMedicament', 'deleteMedicament', 'searchMedicaments', 'rapportStockCritique', 'listDemandes', 'approuverDemande', 'rejeterDemande', 'listUtilisateurs', 'rapports', 'generatePDF'],
 ];
 $controller = $_GET['controller'] ?? 'auth';
@@ -34,10 +34,6 @@ try {
         $role = $_SESSION['user_role'];
         if (!in_array($role, ['client', 'pharmacien', 'responsable'], true)) throw new RuntimeException('ACCESS_DENIED', 403);
         redirect(buildUrl($role, 'dashboard'));
-    }
-    if (realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === __FILE__) {
-        header('Location: ' . appUrl('index.php') . (empty($_SERVER['QUERY_STRING']) ? '' : '?' . $_SERVER['QUERY_STRING']), true, 307);
-        exit;
     }
     define('APP_ROUTED', true);
     $controllerName = ucfirst($controller) . 'Controller';

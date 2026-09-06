@@ -251,7 +251,7 @@ INSERT INTO ordonnance_medicament (id_ordonnance, id_medicament, quantite, posol
 
 -- Transactions (pour les ordonnances traitées)
 INSERT INTO transaction (id_ordonnance, id_client, id_pharmacien, montant_total, mode_paiement, date_transaction) VALUES
-(3, 4, 2, 18.70, 'carte_bancaire', '2026-08-21 10:30:00'),
+(3, 4, 2, 18.70, 'carte', '2026-08-21 10:30:00'),
 (5, 4, 3, 35.40, 'especes', '2026-08-16 14:15:00');
 
 -- Demandes de renouvellement

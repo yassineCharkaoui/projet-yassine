@@ -235,10 +235,12 @@ class Interaction
         try {
             $stmt = $this->pdo->prepare("
                 UPDATE interaction_medicamenteuse 
-                SET niveau_gravite = ?, description = ?, recommandation = ?
+                SET id_medicament_1 = ?, id_medicament_2 = ?, niveau_gravite = ?, description = ?, recommandation = ?
                 WHERE id_interaction = ?
             ");
             return $stmt->execute([
+                min($data['id_medicament_1'], $data['id_medicament_2']),
+                max($data['id_medicament_1'], $data['id_medicament_2']),
                 $data['niveau_gravite'],
                 $data['description'],
                 $data['recommandation'] ?? null,
@@ -256,12 +258,27 @@ class Interaction
     public function delete(int $id): bool
     {
         try {
-            $stmt = $this->pdo->prepare("DELETE FROM interaction_medicamenteuse WHERE id_interaction = ?");
-            return $stmt->execute([$id]);
+            $stmt = $this->pdo->prepare("DELETE FROM interaction_medicamenteuse WHERE id_interaction = ? AND NOT EXISTS (SELECT 1 FROM alerte_interaction WHERE alerte_interaction.id_interaction = interaction_medicamenteuse.id_interaction)");
+            $stmt->execute([$id]);
+            return $stmt->rowCount() === 1;
         } catch (PDOException $e) {
             error_log("Erreur delete: " . $e->getMessage());
             return false;
         }
+    }
+
+    public function pairExists(int $med1, int $med2, int $excludeId = 0): bool
+    {
+        $stmt = $this->pdo->prepare('SELECT COUNT(*) FROM interaction_medicamenteuse WHERE ((id_medicament_1 = ? AND id_medicament_2 = ?) OR (id_medicament_1 = ? AND id_medicament_2 = ?)) AND id_interaction <> ?');
+        $stmt->execute([$med1, $med2, $med2, $med1, $excludeId]);
+        return (int) $stmt->fetchColumn() > 0;
+    }
+
+    public function hasAlerts(int $id): bool
+    {
+        $stmt = $this->pdo->prepare('SELECT COUNT(*) FROM alerte_interaction WHERE id_interaction = ?');
+        $stmt->execute([$id]);
+        return (int) $stmt->fetchColumn() > 0;
     }
 }
 ?>
